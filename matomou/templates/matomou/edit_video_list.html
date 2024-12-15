@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Matomou Site alpha-0.0.1</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+        <!-- Custom CSS Style -->
+        <link href="{% static 'matomou/css/primary.css' %}" rel="stylesheet">
+        <!-- Extra CSS Style -->
+        <style>
+            /* None at the moment */
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        {% include 'matomou/navbar.html' %}
+        <!-- Main Canvas -->
+
+        <!-- Form Box -->
+        <div class="col-10 offset-md-1 justify-content-center align-items-center vh-80">
+            <form method="post" action={% url 'matomou:call_edit_video_list' list_id %} class="form-group">
+                {% csrf_token %}
+                <div class="column justify-content-center m-2">
+                    <h4>列表名</h4>
+                    <input type="text" name="list_name" placeholder="在此输入列表名" class="form-control" value="{{ list_name }}" required></input>
+                    <h4>列表简介</h4>
+                    <textarea type="text" name="list_description" id="list_description" rows="12" class="form-control m-2 w-100" required>{{ list_description }}</textarea>
+                    <div class="btn-group" role="group" aria-label="public level choice">
+                        <input type="radio" class="btn-check" name="public_level" id="option1" value="0" autocomplete="off" {% if public_level == 0 %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="option1">全员可见</label>
+                      
+                        <input type="radio" class="btn-check" name="public_level" id="option2" value="1" autocomplete="off" {% if public_level == 1 %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="option2">登录后可见</label>
+                      
+                        <input type="radio" class="btn-check" name="public_level" id="option3" value="2" autocomplete="off" {% if public_level == 2 %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="option3">关注后可见</label>
+
+                        <input type="radio" class="btn-check" name="public_level" id="option4" value="3" autocomplete="off" {% if public_level == 3 %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="option4">好友可见</label>
+
+                        <input type="radio" class="btn-check" name="public_level" id="option5" value="4" autocomplete="off" {% if public_level == 4 %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="option5">仅自己可见</label>
+                    </div>
+                    <input type="submit" class="btn btn-primary m-2" value="提交" id="submit_button">
+                </div>
+            </form>
+        </div>
+    
+
+
+        <!-- Bootstrap Script-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    </body>
+</html>

@@ -1,0 +1,58 @@
+.preview-container {
+    display: block;
+    margin-bottom: 15px;
+}
+.thumbnail {
+    width: 80vw;
+    max-width: 320px;
+    height: auto;
+    border-radius: 8px;
+}
+.subtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.author-name {
+    font-size: 1.0em;
+    margin-top: 10px;
+}
+
+.thumbnail-container {
+    background-color: rgba(0, 0, 0, 1);
+}
+.thumbnail-container:hover img {
+    opacity: 0.7; /* Darkens the image slightly on hover */
+    transition: opacity 0.15s ease-in-out;
+}
+
+.subtitle-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0); /* Semi-transparent black background */
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.thumbnail-container:hover .subtitle-overlay {
+    opacity: 1; /* Shows the subtitle on hover */
+}
+
+.youtube-button {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.thumbnail-container:hover .youtube-button {
+    opacity: 1;
+}
+
+.thumbnail-container:hover .youtube-button:hover {
+    opacity: 0.8;
+}
+

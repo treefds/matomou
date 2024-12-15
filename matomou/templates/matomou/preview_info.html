@@ -1,0 +1,94 @@
+{% load static %}
+<div id="preview-container" class="m-4 text-center">
+    <img src="{% static 'matomou/doragon.png' %}" id="video-thumbnail" class="thumbnail" alt="Video Thumbnail">
+    <div id="video-title" class="subtitle">快速创建</div>
+    <div id="video-author-name" class="author-name">请在下方输入视频URL (YouTube)</div>
+</div>
+<script>
+    // Function to extract video ID from YouTube URL
+    function extractVideoId(url) {
+        if (url.includes("youtube")) {
+            return extractYoutubeId(url);
+        } else if (url.includes("bilibili")) {
+            return extractBilibiliID(url);
+        }
+        return null;
+    }
+
+    function extractYoutubeId(url) {
+        const regex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^&]+)/;
+        const match = url.match(regex);
+        return match ? match[1] || match[2] : null;
+    }
+
+    function extractBilibiliID(url) {
+        const regex = /\/video\/(BV[\w\d]+)/;
+        const match = url.match(regex);
+        return (match && match[1]) ? match[1] : null;
+    }
+
+    // Function to fetch video details from YouTube API
+    async function fetchVideoDetails(videoId) {
+        console.log("aaaaaaa!!!!");
+        if (videoId.slice(0, 2).toLowerCase() == 'bv' && videoId.length == 12) {
+            fetchBilibiliDetails(videoId);
+        } else {
+            fetchYoutubeDetails(videoId);
+        }
+
+        
+    }
+
+    async function fetchBilibiliDetails(videoId) {
+        const queryParams = new URLSearchParams({bvid: videoId}).toString();
+        const apiUrl = `{% url 'matomou:api_bvproxy' %}?${queryParams}`;
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+
+            if (data.video_title) {
+                const title = data.video_title;
+                const author = data.uploader_name;
+                const thumbnailUrl = data.pic_url;
+
+                // Update preview
+                document.getElementById("preview-container").style.display = "block";
+                document.getElementById("video-thumbnail").src = thumbnailUrl;
+                document.getElementById("video-title").textContent = title;
+                document.getElementById("video-author-name").textContent = author;
+            }
+
+        } catch (error) {
+            console.error("Error fetching video details:", error);
+        }
+    }
+
+    async function fetchYoutubeDetails(videoId) {
+        const apiUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.title) {
+                const title = data.title;
+                const author = data.author_name;
+                const thumbnailUrl = data.thumbnail_url;
+
+                // Update preview
+                document.getElementById("preview-container").style.display = "block";
+                document.getElementById("video-thumbnail").src = thumbnailUrl;
+                document.getElementById("video-title").textContent = title;
+                document.getElementById("video-author-name").textContent = author;
+            }
+        } catch (error) {
+            console.error("Error fetching video details:", error);
+            // alert("An error occurred while fetching the video details.");
+        }
+    }
+</script>

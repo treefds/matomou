@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Matomou Site alpha-0.0.1</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Custom CSS Style-->
+        <link href="{% static 'matomou/css/primary.css' %}" rel="stylesheet">
+        <!-- Extra CSS Style-->
+        <style>
+            .banner {
+                width: 100%;
+                height: 25vh;
+                overflow: hidden;
+            }
+            .banner-img {
+                width: 100%;
+                object-fit: cover;
+            }
+            
+            .thumbnail-container {
+                background-color: rgba(0, 0, 0, 1);
+            }
+            .thumbnail-container:hover img {
+                opacity: 0.7; /* Darkens the image slightly on hover */
+                transition: opacity 0.15s ease-in-out;
+            }
+
+            .subtitle-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(0, 0, 0, 0); /* Semi-transparent black background */
+                color: #fff;
+                text-align: center;
+                padding: 10px;
+                opacity: 0;
+                transition: opacity 0.15s ease-in-out;
+            }
+
+            .thumbnail-container:hover .subtitle-overlay {
+                opacity: 1; /* Shows the subtitle on hover */
+            }
+
+            .youtube-button {
+                opacity: 0;
+                transition: opacity 0.15s ease-in-out;
+            }
+
+            .thumbnail-container:hover .youtube-button {
+                opacity: 1;
+            }
+
+            .thumbnail-container:hover .youtube-button:hover {
+                opacity: 0.8;
+            }
+
+            .decorative-line {
+                width: 100%; 
+                height: 1px; 
+                background-color: #666; 
+            }
+
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        {% include "matomou/navbar.html" %}
+        <!-- Banner -->
+
+        <div class="banner shadow mb-5">
+            <img src="{% static 'matomou/pg.png' %}" alt="Banner" class="banner-img">
+        </div>
+
+        <!-- Main Canvas -->
+        <div class="container">
+            <div class="col-md-10 offset-md-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="m-2">最近添加</h3>
+                    <a href="{% url 'matomou:create' %}" style="text-decoration: none;">
+                        <i class="bi bi-plus-circle" title="添加新视频"></i>
+                    </a>
+                </div>
+                <div class="decorative-line shadow mu-1 md-1"></div>
+                <div class="overflow-auto d-flex justify-content-left align-items-center">
+                    {% if video_entries %}
+                        {% for entry in video_entries %}
+                            <!-- Video Thumbnail -->
+                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center">
+                                <a href="{% url 'matomou:video_detail' entry.id %}" class="position-relative d-block overflow-hidden shadow m-3 thumbnail-container">
+                                    <div class="img-fluid" style="width: 100%; height: 100%; max-width: 500px; aspect-ratio: 16 / 9; object-fit: cover; text-align: center;">
+                                        <img src="{{ entry.thumbnail_url }}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover; ">
+                                        <div class="subtitle-overlay">{{entry.video_title}}</div>
+                                        <div class="d-flex justify-content-right" style="position: absolute; right: 8%; top: 10%;">
+                                            {% if entry.youtube_id %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="youtube-button ms-1">
+                                                <a href="https://www.youtube.com/watch?v={{ entry.youtube_id }}">
+                                                    <rect width="24" height="24" fill="transparent"/>
+                                                    <path class="youtube-button-path" fill="#FFFFFF" d="M23.498 6.186a2.946 2.946 0 0 0-2.072-2.082C19.409 3.553 12 3.553 12 3.553s-7.408 0-9.426.552A2.946 2.946 0 0 0 .502 6.186C0 8.204 0 12 0 12s0 3.796.502 5.814a2.946 2.946 0 0 0 2.072 2.082c2.018.552 9.426.552 9.426.552s7.409 0 9.426-.552a2.946 2.946 0 0 0 2.072-2.082C24 15.796 24 12 24 12s0-3.796-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                                </a>
+                                            </svg>
+                                            {% endif %}
+                                            {% if entry.bilibili_id %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="youtube-button ms-1">
+                                                <a href="https://www.bilibili.com/video/{{ entry.bilibili_id }}">
+                                                    <rect width="24" height="24" fill="transparent"/>
+                                                    <path class="youtube-button-path" fill="#FFFFFF" d="M18.223 3.086a1.25 1.25 0 0 1 0 1.768L17.08 5.996h1.17A3.75 3.75 0 0 1 22 9.747v7.5a3.75 3.75 0 0 1-3.75 3.75H5.75A3.75 3.75 0 0 1 2 17.247v-7.5a3.75 3.75 0 0 1 3.75-3.75h1.166L5.775 4.855a1.25 1.25 0 1 1 1.767-1.768l2.652 2.652c.079.079.145.165.198.257h3.213c.053-.092.12-.18.199-.258l2.651-2.652a1.25 1.25 0 0 1 1.768 0zm.027 5.42H5.75a1.25 1.25 0 0 0-1.247 1.157l-.003.094v7.5c0 .659.51 1.199 1.157 1.246l.093.004h12.5a1.25 1.25 0 0 0 1.247-1.157l.003-.093v-7.5c0-.69-.56-1.25-1.25-1.25zm-10 2.5c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25zm7.5 0c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25z"/>
+                                                </a>
+                                            </svg>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </a>      
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        No Entries are available.
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Lists -->
+            <div class="col-md-10 offset-md-1">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="m-2">新表单</h3>
+                    <a href="{% url 'matomou:create_video_list' %}" class="text-decoration-none">
+                        <i class="bi bi-plus-circle" title="创建新表单"></i>
+                    </a>
+                </div>
+                <div class="decorative-line shadow mu-1 md-1"></div>
+                <div class="overflow-auto d-flex justify-content-left align-items-center">
+                    {% if video_lists %}
+                        {% for vlist in video_lists %}
+                            <!-- Video Thumbnail -->
+                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center">
+                                <a href="{% url 'matomou:video_list' vlist.id %}"  class="position-relative d-block overflow-hidden shadow m-3 thumbnail-container">
+                                    <div class="img-fluid" style="width: 100%; height: 100%; max-width: 500px; aspect-ratio: 16 / 9; object-fit: cover; text-align: center;">
+                                        <img src="{{ vlist.thumbnail_url }}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover; ">
+                                        <div class="subtitle-overlay">{{vlist.list_name}}</div>
+                                    </div>
+                                </a>      
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        No Entries are available.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    
+    <!-- Bootstrap Script-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
+</html>
